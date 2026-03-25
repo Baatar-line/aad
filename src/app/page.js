@@ -18,10 +18,10 @@ export default function Home() {
         </div>
         <div className="flex gap-3 border-black ">
           {" "}
-          <p className=" border rounded-xl py-2 px-4 bg-blue-600">All</p>
+          <botton className=" border rounded-xl py-2 px-4 bg-blue-600">All</botton>
           <p className=" border rounded-xl py-2 px-4">Active</p>
           <p className="border rounded-xl py-2 px-4">Completed</p>{" "}
-        </div>
+        </div> 
         <p>No tasks yet. Add one above!</p>
         <div className="flex flex-col justify-center items-center">
         {" "}
