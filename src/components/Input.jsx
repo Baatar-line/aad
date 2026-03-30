@@ -1,11 +1,11 @@
 import React  from 'react'
 
 
-export const Input = ({setInputValue}) => {
-
+export const Input = ({setInputValue , inputValue}) => {
+  
   return (
-   
     <input
+    value={inputValue}
     onChange={(event) => {
     setInputValue(event.target.value)
     console.log(event.target.value);
@@ -18,6 +18,7 @@ export const Input = ({setInputValue}) => {
     />
   )
 }
+
 
 
 // xs=2px , sm=4px , md=6px , lg=8px , xl=12px,
