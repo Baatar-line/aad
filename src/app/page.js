@@ -2,87 +2,132 @@
 
 import { Input } from "@/components/Input";
 import Tabs from "@/components/Tabs";
-import Image from "next/image";
 import { useState } from "react";
 
-
 export default function Home() {
-  //  Жагсаалтанд байгаа бүх task-ууд
   const [tasks, setTasks] = useState([]);
-  // Input дотор бичсэн текст
   const [inputValue, setInputValue] = useState("");
-const [currentFilter, setCurrentFilter] = useState("All");
+  const [currentFilter, setCurrentFilter] = useState("All");
+
+  // ➕ Task нэмэх
   const handleClick = () => {
-    if (inputValue === "" && inputValue.length === 0){
-      alert("Write a task name")
+    if (inputValue === "") {
+      alert("Write a task name");
+      return;
     }
-    // 1111111111111 Хэрэглэгч input-д текст бичэх бүрд inputValue state шинэчлэгдэнэ.
-    // ...tasks гэдэг нь spread оператор — хуучин жагсаалтыг хадгалж, шинээр нэмнэ гэсэн үг.
-    setTasks([{taskName:inputValue , isCompleted:false, id:Math.random()} , ...tasks]);
+    setTasks([
+      { text: inputValue, completed: false, id: Date.now() },
+      ...tasks,
+    ]);
     setInputValue("");
   };
-  const handleCheck = (taskId)=> {
-    const updatedTasks = tasks.map((task)=>{
-      if (task.id === taskId){
-        return{...task, isCompleted: !task.isCompleted };
-      }else {
-        return task;
-      }
-    });
-    setTasks(updatedTasks);
+
+  // Checkbox
+  const toggleComplete = (id) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task,
+      ),
+    );
   };
-  // console.log(tasks);
-   const filteredTask = tasks.filter((task) => {
-    if (currentFilter === "Active") return ! task.isCompleted;
-    if (currentFilter === "Completed") return task.isCompleted;
+
+  const handleDelete = (id) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
+
+  //  Filter + sort
+  const filteredTasks = tasks.filter((task) => {
+    if (currentFilter === "Active") return !task.completed;
+    if (currentFilter === "Completed") return task.completed;
     return true;
   });
-  filteredTask.map((task) => (
-  <div key={task.id}></div>))
+  // ✅ Эдгээр мөрүүдийг filteredTasks-ийн дараа нэмэх
+  const completedCount = tasks.filter((t) => t.completed).length;
+  const totalCount = tasks.length;
+
+  const clearCompleted = () => {
+    setTasks(tasks.filter((t) => !t.completed));
+  };
   return (
     <div className="flex flex-col justify-center items-center">
-      <div
-        className=" flex flex-col max-w-[377px] min-h-[290px] bg-white
-     text-black rounded-lg justify-center items-center text-xs gap-5 p-3"
-      >
-        <h1 className="text-cemibold text-xl">To-Do list</h1>
-        <div className="flex max-w-[345px] min-h-[38px] justify-between gap-2">
-          {/* 44444444444. setInputValue функцийг prop-оор дамжуулж
-           өгснөөр Input доторх өөрчлөлт page.js дэх state-г шууд шинэчилж чадна. */}
-          <Input setInputValue={setInputValue} inputValue={inputValue}/>
+      <div className="flex flex-col max-w-94.25 min-h-72.5 bg-white text-black rounded-lg justify-center items-center text-xs gap-5 p-3 mt-10">
+        <h1 className="text-semibold text-xl">To-Do list</h1>
+
+        <div className="flex max-w-86.25 min-h-9.5 justify-between gap-2">
+          <Input setInputValue={setInputValue} inputValue={inputValue} />
           <button
-            // 22222222222 Шинэ task-ыг жагсаалтын эхэнд нэмнэ
             onClick={handleClick}
             className="border-black flex items-center bg-green-300 border rounded-lg p-1 px-4"
           >
             add
           </button>
         </div>
-        <div className="flex gap-3 border-black ">
-              <Tabs setCurrentFilter={setCurrentFilter}/>
+
+        <div className="flex gap-3">
+          <Tabs
+            setCurrentFilter={setCurrentFilter}
+            currentFilter={currentFilter}
+          />
         </div>
-        {/* <botton onClick={()=> setTasks(tasks + 1 )}>{tasks}times clicked</botton> */}
-        {/* 3333333333333 tasks массив доторх бүх элементийг давтаж, <p> tag-аар харуулна. */}
-        {tasks.length === 0 ? (
+
+        {filteredTasks.length === 0 ? (
           <p>No tasks yet. Add one above!</p>
         ) : (
-          <div className="flex flex-col justify-between gap-1">
-            {/* tasks массив доторх бүх элементийг давтаж, <p> tag-аар харуулна. */}
-            {filteredTask.map((task) => {
-            return (
-                 <div key={task.id} className="flex justify-between w-[300px] border border-black rounded-lg px-3 py-2 bg-emerald-100">
-                  <input type="checkbox" onClick={() => handleCheck(task.id)} />
-                  <p>{task.taskName}</p>
-                    <button className="px-5 py-2 bg-red-100 rounded-lg text-red-500">Delete</button>
-                   </div>
-                     );
-              })}
+          <div className="flex flex-col gap-2">
+            {filteredTasks.map((task) => (
+              <div
+                key={task.id}
+                className={`flex justify-between items-center w-75 border border-black rounded-lg px-3 py-2
+                  ${task.completed ? "bg-gray-100 opacity-60" : "bg-emerald-100"}`}
+              >
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={() => toggleComplete(task.id)}
+                />
+                <span
+                  className={task.completed ? "line-through text-gray-400" : ""}
+                >
+                  {task.text}
+                </span>
+
+                <button
+                  // onClick={() => handleDelete(task.id)}
+                  onClick={() => {
+                    if (window.confirm("Устгах уу?")) {
+                      handleDelete(task.id);
+                    }
+                  }}
+                  className="px-5 py-2 bg-red-100 rounded-lg text-red-500"
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
           </div>
         )}
+
+        <div className="flex justify-between w-75 border-t-1 border-grey-200 pt-2">
+          <p>
+            {completedCount} of {totalCount} tasks completed
+          </p>
+          {/* <button onClick={clearCompleted} className="text-red-500">
+            clear completed
+          </button> */}
+          <button
+            onClick={() => {
+              if (window.confirm("Бүх completed tasks-ийг устгах уу?")) {
+                clearCompleted();
+              }
+            }}
+            className="text-red-500"
+          >
+            clear completed
+          </button>
+        </div>
         <div className="flex justify-center gap-3">
-          {" "}
           <p>Powered by</p>
-          <p>Pinecone academy</p>
+          <p className="text-green-500">Pinecone academy</p>
         </div>
       </div>
     </div>
