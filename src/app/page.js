@@ -1,7 +1,9 @@
 "use client";
 
+import { Delete } from "@/components/Delete";
 import { Input } from "@/components/Input";
 import Tabs from "@/components/Tabs";
+import { Tasks } from "@/components/Tasks";
 import { useState } from "react";
 
 export default function Home() {
@@ -73,38 +75,11 @@ export default function Home() {
         {filteredTasks.length === 0 ? (
           <p>No tasks yet. Add one above!</p>
         ) : (
-          <div className="flex flex-col gap-2">
-            {filteredTasks.map((task) => (
-              <div
-                key={task.id}
-                className={`flex justify-between items-center w-75 border border-black rounded-lg px-3 py-2
-                  ${task.completed ? "bg-gray-100 opacity-60" : "bg-emerald-100"}`}
-              >
-                <input
-                  type="checkbox"
-                  checked={task.completed}
-                  onChange={() => toggleComplete(task.id)}
-                />
-                <span
-                  className={task.completed ? "line-through text-gray-400" : ""}
-                >
-                  {task.text}
-                </span>
-
-                <button
-                  // onClick={() => handleDelete(task.id)}
-                  onClick={() => {
-                    if (window.confirm("Устгах уу?")) {
-                      handleDelete(task.id);
-                    }
-                  }}
-                  className="px-5 py-2 bg-red-100 rounded-lg text-red-500"
-                >
-                  Delete
-                </button>
-              </div>
-            ))}
-          </div>
+          <Tasks
+            filteredTasks={filteredTasks}
+            toggleComplete={toggleComplete}
+            handleDelete={handleDelete}
+          />
         )}
 
         <div className="flex justify-between w-75 border-t-1 border-grey-200 pt-2">
@@ -114,16 +89,7 @@ export default function Home() {
           {/* <button onClick={clearCompleted} className="text-red-500">
             clear completed
           </button> */}
-          <button
-            onClick={() => {
-              if (window.confirm("Бүх completed tasks-ийг устгах уу?")) {
-                clearCompleted();
-              }
-            }}
-            className="text-red-500"
-          >
-            clear completed
-          </button>
+          <Delete clearCompleted={clearCompleted} />
         </div>
         <div className="flex justify-center gap-3">
           <p>Powered by</p>
