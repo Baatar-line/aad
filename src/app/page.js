@@ -1,7 +1,9 @@
 "use client";
 
+import { Addbutoon } from "@/components/Addbutoon";
 import { Delete } from "@/components/Delete";
 import { Input } from "@/components/Input";
+import { Register } from "@/components/Register";
 import Tabs from "@/components/Tabs";
 import { Tasks } from "@/components/Tasks";
 import { useState } from "react";
@@ -57,21 +59,12 @@ export default function Home() {
 
         <div className="flex max-w-86.25 min-h-9.5 justify-between gap-2">
           <Input setInputValue={setInputValue} inputValue={inputValue} />
-          <button
-            onClick={handleClick}
-            className="border-black flex items-center bg-green-300 border rounded-lg p-1 px-4"
-          >
-            add
-          </button>
+          <Addbutoon handleClick={handleClick} />
         </div>
-
-        <div className="flex gap-3">
-          <Tabs
-            setCurrentFilter={setCurrentFilter}
-            currentFilter={currentFilter}
-          />
-        </div>
-
+        <Tabs
+          setCurrentFilter={setCurrentFilter}
+          currentFilter={currentFilter}
+        />
         {filteredTasks.length === 0 ? (
           <p>No tasks yet. Add one above!</p>
         ) : (
@@ -81,14 +74,8 @@ export default function Home() {
             handleDelete={handleDelete}
           />
         )}
-
         <div className="flex justify-between w-75 border-t-1 border-grey-200 pt-2">
-          <p>
-            {completedCount} of {totalCount} tasks completed
-          </p>
-          {/* <button onClick={clearCompleted} className="text-red-500">
-            clear completed
-          </button> */}
+          <Register completedCount={completedCount} totalCount={totalCount} />
           <Delete clearCompleted={clearCompleted} />
         </div>
         <div className="flex justify-center gap-3">

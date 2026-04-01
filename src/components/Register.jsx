@@ -1,5 +1,9 @@
 import React from "react";
 
-export const Register = () => {
-  return fdg;
+export const Register = ({ completedCount, totalCount }) => {
+  return (
+    <p>
+      {completedCount} of {totalCount} tasks completed
+    </p>
+  );
 };
